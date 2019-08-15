@@ -20,34 +20,41 @@ use Session;
 
 class UserController extends Controller
 {
+    
+    public function getUserHobbies(Request $request){
 
+        $loggedUserId = Session::get("userID");
 
-    //
-    public function showPotentialFriends(Request $request){
+        $userHobbies = User::getUserHobbies($loggedUserId);
 
-       
+        return response()->json(compact('userHobbies'));
+        
+    }
+    public function showPotentialFriends(Request $request)
+    {
         $loggedUserId = Session::get("userID");
       
-        $potentialFriends = User::getPotentialFriends( $loggedUserId);
+        $potentialFriends = User::getPotentialFriends($loggedUserId);
 
-         return response()->json(compact('potentialFriends'));
-       
+        return response()->json(compact('potentialFriends'));
     }
 
-    public function showBirthdays(Request $request){
+    public function showBirthdays(Request $request)
+    {
         $loggedUserId = Session::get("userID");
       
-       $friendsBirthDays = User::getFriendsBirthDaysDates( $loggedUserId);
+        $friendsBirthDays = User::getFriendsBirthDaysDates($loggedUserId);
 
-return response()->json(compact('friendsBirthDays'));
-       
+        return response()->json(compact('friendsBirthDays'));
     }
 
-    public function logOut(Request $request){
+    public function logOut(Request $request)
+    {
         Auth::logout();
         Session::flush();
-       // return Redirect::to('/');
+        
     }
+
     public function register(Request $request)
     {
         $validator = Validator::make($request->json()->all(), [
@@ -69,7 +76,6 @@ return response()->json(compact('friendsBirthDays'));
 
     public function login(Request $request)
     {
-      
         $credentials = $request->only('name', 'password');
         try {
             if (!$token = JWTAuth::attempt($credentials)) {
@@ -98,22 +104,22 @@ return response()->json(compact('friendsBirthDays'));
                
                 
                 return response()->json(['error' => 'invalid credentials'], 400);
-                
             }
         } catch (JWTExecption $e) {
             return response()->json(['error' => 'could not create token'], 500);
         }
      
-       $userLogged = Auth::user();
-       $request->session()->put('userID', $userLogged['id']);
+        $userLogged = Auth::user();
+        $request->session()->put('userID', $userLogged['id']);
        
-       Session::save();
+        Session::save();
         return response()->json(compact('token'));
-        
     }
 
     public function getAuthenticatedUser()
     {
+        //$token = JWTAuth::attempt($credentials, ['exp' => Carbon\Carbon::now()->addDays(7)->timestamp]);
+
         try {
             if (! $user = JWTAuth::parseToken()->authenticate()) {
                 return response()->json(['error' => 'user not found'], 404);
@@ -125,22 +131,21 @@ return response()->json(compact('friendsBirthDays'));
         } catch (Tymon\JWTAuth\Exceptions\JWTExecption $e) {
             return response()->json(['token absent'], $e->getStatusCode());
         }
-      //  $user = Auth::user();
 
-     $members = User::getCurrentAllMembrers( $user);
-     $user['site_users'] = json_encode($members);
+        $members = User::getCurrentAllMembrers($user);
+        $user['site_users'] = json_encode($members);
   
-     return response()->json(compact('user'));
-       
+        return response()->json(compact('user'));
     }
-    public function addFriend(Request $request){
-       
+
+    public function addFriend(Request $request)
+    {
         $newFriendId = $request->all()[0];
 
-         $addres = User::addNewFriendToMember($newFriendId);
-         if($addres == true){
+        $addres = User::addNewFriendToMember($newFriendId);
+        if ($addres == true) {
             $request->session()->flash('status', 'Friend add successfuly!');
-           // dd(Session::all());
-         }
-     }
+            
+        }
+    }
 }

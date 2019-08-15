@@ -1,4 +1,19 @@
-import axios from 'axios'
+import axios from 'axios';
+
+export const getUserHobbies = () => {
+    return axios
+        .get('api/getUserHobbies', {
+            headers: {
+                Authorization: `Bearer ${localStorage.usertoken}`
+            }
+        })
+        .then(response => {
+            return response.data
+        })
+        .catch(err => {
+            console.log(err)
+        })
+}
 
 export const showPotentialFriends = () => {
     return axios

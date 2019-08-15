@@ -1,20 +1,21 @@
 import React, { Component } from 'react';
-import Moment from 'react-moment';
+import moment from 'moment';
 
 import { getProfile } from './UserFunctions';
+import { getUserHobbies } from './UserFunctions';
 import { addFriend } from './UserFunctions';
 import { showBirthdays } from './UserFunctions';
 import { showPotentialFriends } from './UserFunctions';
 import FriendsList from './FriendsList';
 import FriendsBirthDays from './FriendsBirthDays';
 import PotentialFriendsList from './PotentialFriendsList';
+import UserHobbies from './UserHobbies';
 
 class Profile extends Component {
     constructor() {
         super()
         this.state = {
             name: '',
-            hobbies: '',
             user_bday: '',
             members: [],
             related_friends: [],
@@ -24,6 +25,7 @@ class Profile extends Component {
             isShowUpcomingBirthdays: false,
             friendsBDays: [],
             potentialFriends: [],
+            usersHobbiesList: [],
             error: '',
 
         }
@@ -32,7 +34,7 @@ class Profile extends Component {
         this.handleShowAllFriends = this.handleShowAllFriends.bind(this);
         this.handlePotentialFriends = this.handlePotentialFriends.bind(this);
         this.handleShowUpcomingBirthdays = this.handleShowUpcomingBirthdays.bind(this);
-        //ShowUpcomingBirthdays
+
     }
 
     componentDidMount() {
@@ -42,7 +44,6 @@ class Profile extends Component {
             this.setState({
                 userId: res.user.id,
                 name: res.user.name,
-                hobbies: res.user.hobbies,
                 user_bday: res.user.user_birthday,
                 related_friends: res.user.related_friends,
                 members: res.user.site_users,
@@ -50,18 +51,14 @@ class Profile extends Component {
             })
 
         })
-    }
 
-    handleShowUpcomingBirthdays() {
+        getUserHobbies().then(res => {
 
-        this.setState({ isShowUpcomingBirthdays: !this.state.isShowUpcomingBirthdays });
-        console.log(this.state.isShowUpcomingBirthdays);
+            this.setState({
+                usersHobbiesList: res.userHobbies,
+            })
+        })
 
-    }
-
-    handlePotentialFriends() {
-
-        this.setState({ isShowPotentialFriends: !this.state.isShowPotentialFriends });
         showPotentialFriends().then(res => {
 
             this.setState({
@@ -70,6 +67,24 @@ class Profile extends Component {
 
         })
 
+        showBirthdays().then(res => {
+
+            this.setState({
+                friendsBDays: res.friendsBirthDays,
+            })
+
+        })
+    }
+
+    handleShowUpcomingBirthdays() {
+
+        this.setState({ isShowUpcomingBirthdays: !this.state.isShowUpcomingBirthdays });
+
+    }
+
+    handlePotentialFriends() {
+
+        this.setState({ isShowPotentialFriends: !this.state.isShowPotentialFriends });
 
     }
 
@@ -83,14 +98,7 @@ class Profile extends Component {
     handleShowBirthdays() {
 
         this.setState({ isShowBirthdays: !this.state.isShowBirthdays });
-        showBirthdays().then(res => {
 
-            this.setState({
-                friendsBDays: res.friendsBirthDays,
-            })
-
-        })
-        // console.log(this.state.isShowBirthdays);
 
     }
 
@@ -119,16 +127,33 @@ class Profile extends Component {
     render() {
 
         return (
-            <div className="container">
-                <div className="jumbotron mt-5">
+            <div className="profile-wrapper">
+                <div className="profile-pic" ></div>
+                <div className="profile-card-wrapper">
                     <div className="col-md-12 ">
-                        <i className="fa fa-user-circle"></i>
+                        <div className="row">
+                            <div className="col-md-12 d-flex justify-content-center border-bottom form-group">
+                                <span className="user-name text-capitalize">
+                                    {this.state.name ? this.state.name : ''}
+                                </span>
+                            </div>
+                        </div>
+                        <div className="row">
+                            <div className="col-md-12 d-flex justify-content-center align-items-center form-group">
+                                <div className="d-flex align-items-center mr-3">
+                                    <span className="font-weight-bold mr-3">Born : </span>
+                                    <span className="">{this.state.user_bday ? moment(this.state.user_bday).format("DD/MM/YYYY") : ''}</span>
+                                </div>
+                                <div className="d-flex align-items-center">
+                                    <span className="font-weight-bold mr-3">Hobbies : </span>
+                                    {this.state.usersHobbiesList ? <UserHobbies userHobbies={this.state.usersHobbiesList}></UserHobbies> : ''}
+                                </div>
+                            </div>
+                        </div>
                         <div className="row">
                             <div className="col-md-12">
                                 <ul className="list-inline d-flex justify-content-center">
-                                    <li className="list-inline-item">Welcome <span className="font-weight-bold text-capitalize">
-                                        {this.state.name} | </span>
-                                    </li>
+
                                     <li className="list-inline-item">
                                         <div className="form-check">
                                             <label className="form-check-label">
@@ -184,41 +209,27 @@ class Profile extends Component {
                                 </ul>
                             </div>
                         </div>
-                    </div>
-                    <table className="table col-md-4 mx-auto">
-                        <tbody>
-                            <tr>
-
-                                <td>{this.state.hobbies}</td>
-                                <td>
-                                    <Moment format="DD/MM/YYYY">
-                                        {this.state.user_bday}
-                                    </Moment></td>
-
-                            </tr>
-                        </tbody>
-                    </table>
-
-                    <div className="row">
-                        <div className="col-md-12">
-                            <div className="d-flex">
-                                <div className="flex-fill">
+                        <div className="row">
+                            <div className="col-md-12 d-flex">
+                                <div className="friends-list scrollbar scrollbar-wrapper">
                                     <FriendsList onAddFriend={this.onAddFriend}
                                         members={this.state.members}></FriendsList>
                                 </div>
-                                <div className="flex-fill">{this.state.isShowAllFriends ? 'isShowAllFriends' : ''}</div>
-                                <div className="flex-fill">{this.state.isShowBirthdays ? <FriendsBirthDays
-                                    friendsBirthDays={this.state.friendsBDays}></FriendsBirthDays> : ''}</div>
+                                <div className="flex-grow-1 data-wrapper d-flex">
+                                    <div className="flex-fill">{this.state.isShowAllFriends ? 'isShowAllFriends' : ''}</div>
+                                    <div className="flex-fill">{this.state.isShowBirthdays ? <FriendsBirthDays
+                                        friendsBirthDays={this.state.friendsBDays}></FriendsBirthDays> : ''}</div>
+                                    <div className="flex-fill">{this.state.isShowPotentialFriends ? <PotentialFriendsList
+                                        currPotentialFriends={this.state.potentialFriends}></PotentialFriendsList> : ''}</div>
+                                    <div className="flex-fill">{this.state.isShowUpcomingBirthdays ? 'isShowUpcomingBirthdays' : ''}</div>
+                                </div>
 
-                                <div className="flex-fill">{this.state.isShowPotentialFriends ? <PotentialFriendsList
-                                    currPotentialFriends={this.state.potentialFriends}></PotentialFriendsList> : ''}</div>
-
-                                <div className="flex-fill">{this.state.isShowUpcomingBirthdays ? 'isShowUpcomingBirthdays' : ''}</div>
                             </div>
 
                         </div>
-
                     </div>
+
+
 
                 </div>
             </div>

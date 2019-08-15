@@ -1,5 +1,5 @@
 import React from 'react';
-import Moment from 'react-moment';
+import moment from 'moment';
 class FriendsBirthDays extends React.Component {
     componentWillReceiveProps(nextProps) {
 
@@ -12,9 +12,8 @@ class FriendsBirthDays extends React.Component {
             <li key={item.id} >
                 <span>{item.name}</span>
                 <span >
-                    <Moment format="DD/MM/YYYY">
-                        {item.user_birthday}
-                    </Moment>
+                    {item.user_birthday ? moment(item.user_birthday).format("DD/MM/YYYY") : ''}
+
                 </span>
             </li>
         ));

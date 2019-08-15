@@ -7,14 +7,13 @@ class NavBar extends Component {
         e.preventDefault()
 
         logOut().then(response => {
-            console.log(response)
             localStorage.removeItem('usertoken');
             this.props.history.push(`/`)
         })
             .catch(err => {
                 console.log(err)
             })
-        // 
+
     }
 
     render() {

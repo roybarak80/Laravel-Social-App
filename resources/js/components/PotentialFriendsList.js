@@ -1,5 +1,5 @@
 import React from 'react';
-import Moment from 'react-moment';
+import moment from 'moment';
 
 class PotentialFriendsList extends React.Component {
 
@@ -12,13 +12,10 @@ class PotentialFriendsList extends React.Component {
         const potentialFriendsList = currPotentialFriends.map((item, index) => (
 
             <li key={item.id} >
-                <span>{item.name}</span>
-                <span >
-                    <Moment format="DD/MM/YYYY">
-                        {item.user_birthday}
-                    </Moment>
-
-
+                <span className="text-capitalize">{item.name}</span>
+                <span className="text-capitalize">{item.hobbie_name}</span>
+                <span>
+                    {item.user_birthday ? moment(item.user_birthday).format("DD/MM/YYYY") : ''}
                 </span>
             </li>
         ));

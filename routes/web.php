@@ -1,5 +1,8 @@
 <?php
 
+use Illuminate\Support\Facades\Auth;
+use Tymon\JWTAuth\Facades\JWTAuth;
+//use Session;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -13,8 +16,18 @@
 Auth::routes();
 
 Route::get( '/{path?}', function(){
+
     return view( 'layouts/app' );
 } )->where('path', '.*');
 
 
+// Route::group(['middleware' => 'auth'], function(){
 
+//     Route::get('/', function () { 
+//          dd(123); });
+
+// });
+// Route::get('/', function()
+// {
+//     return view( 'layouts/app' );
+// });

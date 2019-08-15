@@ -11,18 +11,30 @@ use Session;
 
 class User extends Authenticatable implements JWTSubject
 {
-    public static function getPotentialFriends($userId){
+    public static function getPotentialFriends($userId)
+    {
 
-        $query = "SELECT id,name, user_birthday FROM `users`";
-        $query .="WHERE (DATE_FORMAT(user_birthday, '%m-%d')";
-        $query .="BETWEEN DATE_FORMAT((DATE_SUB(current_date, INTERVAL 5 DAY)),'%m-%d') ";
-        $query .="AND  DATE_FORMAT(NOW(), '%m-%d'))";
-        $query .="OR (DATE_FORMAT(user_birthday, '%m-%d')";
-        $query .="BETWEEN DATE_FORMAT(current_date, '%m-%d')";
-        $query .="AND DATE_FORMAT((DATE_ADD(current_date, INTERVAL 5 DAY)),'%m-%d'))";
+        $query = "SELECT users.id,users.name, users.user_birthday,hobbies.hobbie_name";
+        $query .=" FROM `users`";
+        $query .=" INNER JOIN user_hobbies on user_hobbies.user_id = users.id";
+        $query .=" INNER JOIN hobbies ON hobbies.id = user_hobbies.hobby_id";
+        $query .=" INNER JOIN (";
+        $query .="SELECT hobby_id";
+        $query .=" FROM user_hobbies";
+        $query .=" GROUP BY hobby_id";
+        $query .=" HAVING COUNT(*) > 1";
+        $query .=") AS multiple ON multiple.hobby_id = user_hobbies.hobby_id";
+        $query .=" WHERE (DATE_FORMAT(user_birthday, '%m-%d')";
+        $query .=" BETWEEN DATE_FORMAT((DATE_SUB(current_date, INTERVAL 5 DAY)),'%m-%d')";
+        $query .=" AND DATE_FORMAT(NOW(), '%m-%d'))";
+        $query .=" OR (DATE_FORMAT(user_birthday, '%m-%d')";
+        $query .=" BETWEEN DATE_FORMAT(current_date, '%m-%d')";
+        $query .=" AND DATE_FORMAT((DATE_ADD(current_date, INTERVAL 5 DAY)),'%m-%d'))";
+        $query .=" AND users.id != :userId";
+        $query .=" GROUP BY users.id";
 
-        $res = DB::select($query);
-        
+        $res = DB::select($query, ['userId' => $userId]);
+       
         return $res;
     }
 
@@ -40,28 +52,25 @@ class User extends Authenticatable implements JWTSubject
                     $dicUserFriends[$siteMember->id] =$siteMember->id;
                     $memberFriendsIdArr = explode(",", $siteMember->related_friends);
                     foreach ($memberFriendsIdArr as $memberId) {
-                       if($memberId !=''){
-                           if(gettype($memberId) !== 'string'){
-                            $dicUserFriends[$memberId] =(string)$memberId;
+                        if ($memberId !='') {
+                            if (gettype($memberId) !== 'string') {
+                                $dicUserFriends[$memberId] =(string)$memberId;
+                            }
                         }
-                       }
                     }
                 }
             }
         }
-       // dd($dicUserFriends );
+        // dd($dicUserFriends );
         $dicUserFriendsIdArray =  array_values($dicUserFriends);
         $query ="SELECT id,name, user_birthday FROM `users` where DATE_FORMAT(user_birthday, '%m-%d') >=";
         $query .=" DATE_FORMAT(NOW(), '%m-%d') and DATE_FORMAT(user_birthday, '%m-%d')<=";
         $query .="DATE_FORMAT((NOW() + INTERVAL +30 DAY), '%m-%d') and id in (" . implode(',', $dicUserFriendsIdArray) . ") ";
         $query .="order by DATE_FORMAT(user_birthday, '%m-%d') ASC";
-        //$res = DB::select("select id,name,user_birthday from users where id in(" . implode(',', $dicUserFriendsIdArray) . ")");
-        //to do - convert all ids to string, remove emprty ids.
-       // print_r($query);
+       
         $res = DB::select($query);
-       // dd($res);
+        // dd($res);
         return $res;
-      // return $res = DB::select("select id,name,user_birthday from users where id in(" . implode(',', $dicUserFriendsIdArray) . ")");
        
     }
     public static function getCurrentAllMembrers($userId)
@@ -69,6 +78,18 @@ class User extends Authenticatable implements JWTSubject
         $members = DB::select('select id,name,related_friends from users where id != :userId', ['userId' => $userId['id']]);
        
         return $members;
+    }
+
+    public static function getUserHobbies($userId)
+    {
+        $query = "SELECT hobbies.hobbie_name from hobbies";
+        $query .= " JOIN user_hobbies ON user_hobbies.hobby_id = hobbies.id";
+        $query .= " JOIN users on users.id = user_hobbies.user_id";
+        $query .= " WHERE users.id = :userId";
+        
+        $userHobbies = DB::select($query, ['userId' => $userId]);
+        
+        return $userHobbies;
     }
 
     public static function getLoggedUserData()
