@@ -83338,12 +83338,13 @@ function (_React$Component) {
     value: function render() {
       var _this = this;
 
-      var members = this.props.members;
-      var listmembers = members.map(function (item, index) {
+      var site_memebers = this.props.site_memebers; // console.log(site_memebers)
+
+      var listmembers = site_memebers.map(function (item, index) {
         return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("li", {
           className: "d-flex justify-content-between list-group-item",
           key: item.id
-        }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", null, item.name), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", null, item.isFriend ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", {
+        }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", null, item.name, " | ", item.id), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", null, item.isFriend == 1 ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", {
           className: "fa fa-users"
         }) : react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
           value: item.id,
@@ -83898,6 +83899,7 @@ function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || func
 
 
 
+ // import { addFriend } from './UserFunctions';
 
 
 
@@ -83930,6 +83932,7 @@ function (_Component) {
       friendsBDays: [],
       potentialFriends: [],
       usersHobbiesList: [],
+      site_memebers: [],
       error: ''
     };
     _this.onAddFriend = _this.onAddFriend.bind(_assertThisInitialized(_this));
@@ -83951,7 +83954,8 @@ function (_Component) {
           name: res.user.name,
           user_bday: res.user.user_birthday,
           related_friends: res.user.related_friends,
-          members: res.user.site_users
+          // members: res.user.site_users,
+          site_memebers: res.user.site_all_users
         });
       });
       Object(_UserFunctions__WEBPACK_IMPORTED_MODULE_2__["getUserHobbies"])().then(function (res) {
@@ -83989,8 +83993,7 @@ function (_Component) {
     value: function handleShowAllFriends() {
       this.setState({
         isShowAllFriends: !this.state.isShowAllFriends
-      });
-      console.log(this.state.isShowAllFriends);
+      }); // console.log(this.state.isShowAllFriends);
     }
   }, {
     key: "handleShowBirthdays",
@@ -84004,7 +84007,7 @@ function (_Component) {
     value: function onAddFriend(friendId) {
       var _this3 = this;
 
-      Object(_UserFunctions__WEBPACK_IMPORTED_MODULE_2__["addFriend"])(friendId).then(function (res) {
+      Object(_UserFunctions__WEBPACK_IMPORTED_MODULE_2__["addNewFriend"])(friendId).then(function (res) {
         Object(_UserFunctions__WEBPACK_IMPORTED_MODULE_2__["getProfile"])().then(function (res) {
           _this3.setState({
             userId: res.user.id,
@@ -84012,7 +84015,7 @@ function (_Component) {
             hobbies: res.user.hobbies,
             user_bday: res.user.user_birthday,
             related_friends: res.user.related_friends,
-            members: res.user.site_users
+            site_memebers: res.user.site_all_users
           });
         });
       });
@@ -84034,7 +84037,7 @@ function (_Component) {
         className: "col-md-12 d-flex justify-content-center border-bottom form-group"
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
         className: "user-name text-capitalize"
-      }, this.state.name ? this.state.name : ''))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+      }, this.state.name ? this.state.name : '', "&nbps ", this.state.userId))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "row"
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "col-md-12 d-flex justify-content-center align-items-center form-group"
@@ -84112,7 +84115,7 @@ function (_Component) {
         className: "friends-list scrollbar scrollbar-wrapper"
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_FriendsList__WEBPACK_IMPORTED_MODULE_3__["default"], {
         onAddFriend: this.onAddFriend,
-        members: this.state.members
+        site_memebers: this.state.site_memebers
       })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "flex-grow-1 data-wrapper d-flex"
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
@@ -84265,7 +84268,7 @@ function (_Component) {
 /*!**************************************************!*\
   !*** ./resources/js/components/UserFunctions.js ***!
   \**************************************************/
-/*! exports provided: getUserHobbies, showPotentialFriends, showBirthdays, logOut, addFriend, register, login, getProfile */
+/*! exports provided: getUserHobbies, showPotentialFriends, showBirthdays, logOut, addNewFriend, register, login, getProfile */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -84274,7 +84277,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "showPotentialFriends", function() { return showPotentialFriends; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "showBirthdays", function() { return showBirthdays; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "logOut", function() { return logOut; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "addFriend", function() { return addFriend; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "addNewFriend", function() { return addNewFriend; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "register", function() { return register; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "login", function() { return login; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getProfile", function() { return getProfile; });
@@ -84326,10 +84329,20 @@ var logOut = function logOut() {
   })["catch"](function (err) {
     console.log(err);
   });
-};
-var addFriend = function addFriend(friendId) {
+}; // export const addFriend = (friendId) => {
+//     //  console.log(friendId)
+//     return axios.put('api/addFriend', "\"" + friendId + "\"", {
+//         headers: {
+//             "Accept": "application/json",
+//             "Content-type": "application/json",
+//             Authorization: `Bearer ${localStorage.usertoken}`
+//         }
+//     })
+// }
+
+var addNewFriend = function addNewFriend(friendId) {
   //  console.log(friendId)
-  return axios__WEBPACK_IMPORTED_MODULE_0___default.a.put('api/addFriend', "\"" + friendId + "\"", {
+  return axios__WEBPACK_IMPORTED_MODULE_0___default.a.put('api/addNewFriend', "\"" + friendId + "\"", {
     headers: {
       "Accept": "application/json",
       "Content-type": "application/json",
@@ -84387,6 +84400,8 @@ var getProfile = function getProfile() {
     }
   }).then(function (response) {
     //return user friends without 
+    //TO REMOVE ----
+    console.log(response);
     var userFriends = JSON.parse(response.data.user.site_users);
     var currUser = response.data.user; //return users friends
 
@@ -84408,10 +84423,9 @@ var getProfile = function getProfile() {
       }
     }
 
-    response.data.user.site_users = userFriends; // console.log(response.data)
-    //  console.log(currUser)
-    //  console.log(response.data)
+    response.data.user.site_users = userFriends; //----------
 
+    response.data.user.site_all_users = JSON.parse(response.data.user.site_all_users);
     return response.data;
   })["catch"](function (err) {
     console.log(err);

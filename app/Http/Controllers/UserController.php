@@ -21,6 +21,7 @@ use Session;
 class UserController extends Controller
 {
     
+    
     public function getUserHobbies(Request $request){
 
         $loggedUserId = Session::get("userID");
@@ -52,8 +53,21 @@ class UserController extends Controller
     {
         Auth::logout();
         Session::flush();
-        
     }
+    // public function logout(Request $request)
+    // {
+    //     $accessToken = $request->user()->token();
+
+    //     // DB::table('oauth_refresh_tokens')
+    //     //     ->where('access_token_id', $accessToken->id)
+    //     //     ->update([
+    //     //         'revoked' => true
+    //     //     ]);
+    //     //     Session::flush();
+    //     // $accessToken->revoke();
+
+    //     return response()->json([], 201);
+    // }
 
     public function register(Request $request)
     {
@@ -132,20 +146,37 @@ class UserController extends Controller
             return response()->json(['token absent'], $e->getStatusCode());
         }
 
+        
+        $loggedUserWithFriendIndication = User::getAllUsersWithFriendsIndication($user['id']);
+        
+        
         $members = User::getCurrentAllMembrers($user);
         $user['site_users'] = json_encode($members);
-  
+        $user['site_all_users'] = json_encode($loggedUserWithFriendIndication);
         return response()->json(compact('user'));
     }
 
-    public function addFriend(Request $request)
+    public function addNewFriend(Request $request)
     {
         $newFriendId = $request->all()[0];
-
-        $addres = User::addNewFriendToMember($newFriendId);
+        $loggedUserId = Session::get("userID");
+        $addres = User::addFriend($loggedUserId, $newFriendId);
         if ($addres == true) {
+            //return response()->json(compact('user'))
             $request->session()->flash('status', 'Friend add successfuly!');
             
         }
     }
+
+    // public function addFriend(Request $request)
+    // {
+    //     $newFriendId = $request->all()[0];
+
+    //     $addres = User::addNewFriendToMember($newFriendId);
+    //     if ($addres == true) {
+    //         //return response()->json(compact('user'))
+    //         $request->session()->flash('status', 'Friend add successfuly!');
+            
+    //     }
+    // }
 }

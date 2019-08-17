@@ -63,10 +63,22 @@ export const logOut = () => {
         })
 }
 
-export const addFriend = (friendId) => {
+// export const addFriend = (friendId) => {
+//     //  console.log(friendId)
+
+//     return axios.put('api/addFriend', "\"" + friendId + "\"", {
+//         headers: {
+//             "Accept": "application/json",
+//             "Content-type": "application/json",
+//             Authorization: `Bearer ${localStorage.usertoken}`
+//         }
+//     })
+// }
+
+export const addNewFriend = (friendId) => {
     //  console.log(friendId)
 
-    return axios.put('api/addFriend', "\"" + friendId + "\"", {
+    return axios.put('api/addNewFriend', "\"" + friendId + "\"", {
         headers: {
             "Accept": "application/json",
             "Content-type": "application/json",
@@ -139,6 +151,8 @@ export const getProfile = () => {
         .then(response => {
             //return user friends without 
 
+            //TO REMOVE ----
+            console.log(response)
             const userFriends = JSON.parse(response.data.user.site_users);
             const currUser = response.data.user;
 
@@ -150,7 +164,6 @@ export const getProfile = () => {
                 });
             }
 
-
             for (var i = 0; i < userFriends.length; i++) {
                 var currFriend = userFriends[i];
                 if (!!userFriendIdArray && userFriendIdArray.length > 0) {
@@ -161,9 +174,9 @@ export const getProfile = () => {
 
             }
             response.data.user.site_users = userFriends;
-            // console.log(response.data)
-            //  console.log(currUser)
-            //  console.log(response.data)
+            //----------
+            response.data.user.site_all_users = JSON.parse(response.data.user.site_all_users);
+
             return response.data
         })
         .catch(err => {

@@ -25,9 +25,8 @@ Route::get('getUserHobbies', 'UserController@getUserHobbies');
 // {
 //     return view( 'layouts/app' );
 // });
-Route::match(['put'], '/{id}','UserController@addFriend');
+Route::match(['put'], '/{id}','UserController@addNewFriend');
 
 Route::middleware('auth:api')->get('/{path?}', function (Request $request) {
     return $request->user();
 });
-

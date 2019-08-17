@@ -3,7 +3,8 @@ import moment from 'moment';
 
 import { getProfile } from './UserFunctions';
 import { getUserHobbies } from './UserFunctions';
-import { addFriend } from './UserFunctions';
+// import { addFriend } from './UserFunctions';
+import { addNewFriend } from './UserFunctions';
 import { showBirthdays } from './UserFunctions';
 import { showPotentialFriends } from './UserFunctions';
 import FriendsList from './FriendsList';
@@ -26,6 +27,7 @@ class Profile extends Component {
             friendsBDays: [],
             potentialFriends: [],
             usersHobbiesList: [],
+            site_memebers: [],
             error: '',
 
         }
@@ -46,7 +48,8 @@ class Profile extends Component {
                 name: res.user.name,
                 user_bday: res.user.user_birthday,
                 related_friends: res.user.related_friends,
-                members: res.user.site_users,
+                // members: res.user.site_users,
+                site_memebers: res.user.site_all_users,
 
             })
 
@@ -91,7 +94,7 @@ class Profile extends Component {
     handleShowAllFriends() {
 
         this.setState({ isShowAllFriends: !this.state.isShowAllFriends });
-        console.log(this.state.isShowAllFriends);
+        // console.log(this.state.isShowAllFriends);
 
     }
 
@@ -104,7 +107,7 @@ class Profile extends Component {
 
     onAddFriend(friendId) {
 
-        addFriend(friendId)
+        addNewFriend(friendId)
             .then(res => {
                 getProfile().then(res => {
 
@@ -114,7 +117,7 @@ class Profile extends Component {
                         hobbies: res.user.hobbies,
                         user_bday: res.user.user_birthday,
                         related_friends: res.user.related_friends,
-                        members: res.user.site_users,
+                        site_memebers: res.user.site_all_users,
 
                     })
 
@@ -135,6 +138,7 @@ class Profile extends Component {
                             <div className="col-md-12 d-flex justify-content-center border-bottom form-group">
                                 <span className="user-name text-capitalize">
                                     {this.state.name ? this.state.name : ''}
+                                    &nbps {this.state.userId}
                                 </span>
                             </div>
                         </div>
@@ -213,7 +217,7 @@ class Profile extends Component {
                             <div className="col-md-12 d-flex">
                                 <div className="friends-list scrollbar scrollbar-wrapper">
                                     <FriendsList onAddFriend={this.onAddFriend}
-                                        members={this.state.members}></FriendsList>
+                                        site_memebers={this.state.site_memebers}></FriendsList>
                                 </div>
                                 <div className="flex-grow-1 data-wrapper d-flex">
                                     <div className="flex-fill">{this.state.isShowAllFriends ? 'isShowAllFriends' : ''}</div>

@@ -6,9 +6,12 @@ php artisan serve --port=8081
 
 php artisan migrate
 
+php artisan make:migration create_users_table --create=users 
 
 php artisan migrate:rollback
 
 php artisan cache:clear
 
 return <div><pre>{JSON.stringify(data, null, 2) }</pre></div>;
+
+php artisan make:migration add_user_token 

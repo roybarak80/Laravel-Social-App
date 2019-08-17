@@ -3,11 +3,12 @@ class FriendsList extends React.Component {
 
   render() {
 
-    const { members } = this.props;
-    const listmembers = members.map((item, index) => (
+    const { site_memebers } = this.props;
+    // console.log(site_memebers)
+    const listmembers = site_memebers.map((item, index) => (
       <li className="d-flex justify-content-between list-group-item" key={item.id}>
-        <span>{item.name}</span>
-        <span >{item.isFriend ?
+        <span>{item.name} | {item.id}</span>
+        <span >{item.isFriend == 1 ?
           <i className="fa fa-users"></i> : <button value={item.id} onClick={() => this.props.onAddFriend(item.id)}
             className="btn btn-primary btn-xs" title="Add New Friend">+Add</button>}
         </span>

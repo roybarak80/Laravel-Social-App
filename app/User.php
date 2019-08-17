@@ -11,6 +11,64 @@ use Session;
 
 class User extends Authenticatable implements JWTSubject
 {
+
+    public static function addFriend($userID, $friendID){
+        // add new freind id
+        // get all friends
+        // FIFO
+        $query = "";
+// print_r($userID);
+// print_r( $friendID);
+        $userFriendsIDs = self::getUserFriendsIds($userID);
+        if(count($userFriendsIDs) < 5){
+            print_r( count($userFriendsIDs));
+            $query = "INSERT INTO user_friends(user_friends.user_id, user_friends.friend_id)";
+            $query .=" VALUES( :userID, :friendID)";
+           
+        }else{
+// TO DOFIFO
+        }
+
+        $res = DB::insert($query,  ['userID' => $userID, 'friendID'=>$friendID]);
+       // dd($res);
+        return $res;
+    }
+
+    public static function getUserFriendsIds($userID){
+
+        $query = "SELECT user_id FROM `user_friends` WHERE user_id =:userID";
+
+        $res = DB::select($query, ['userID' => $userID]);
+       
+        return $res;
+    }
+
+    public static function getAllUsersWithFriendsIndication($userId){
+
+        $query = "SELECT u.id, u.name,";
+        $query .= " EXISTS(SELECT *";
+        $query .= " FROM user_friends";
+        $query .= " WHERE user_id = '$userId' AND friend_id = u.id) AS isFriend";
+        $query .= " FROM users u WHERE u.id != '$userId' ";
+
+        $res = DB::select(DB::raw($query)); //, ['userId' => $userId]
+       
+        return $res;
+    }
+    //comment : new.
+    public static function getAllUserFriends($userId){
+
+        $query = "SELECT u.name AS user_name, f.name AS friend_name";
+        $query .=" FROM user_friends AS uf";
+        $query .=" JOIN users AS u ON u.id = uf.user_id";
+        $query .=" JOIN users AS f ON f.id = uf.friend_id";
+        $query .=" where u.id =:userId";
+
+        $res = DB::select($query, ['userId' => $userId]);
+       
+        return $res;
+
+    }
     public static function getPotentialFriends($userId)
     {
 
