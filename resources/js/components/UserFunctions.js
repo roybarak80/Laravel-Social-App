@@ -1,45 +1,67 @@
 import axios from 'axios';
 
-export const getUserHobbies = () => {
+
+export const login = user => {
     return axios
-        .get('api/getUserHobbies', {
-            headers: {
-                Authorization: `Bearer ${localStorage.usertoken}`
+        .post(
+            'api/login', {
+                name: user.name,
+                password: user.password
+            }, {
+                headers: {
+                    'Content-Type': 'application/json'
+                }
             }
-        })
+        )
         .then(response => {
-            return response.data
+            console.log(response);
+            localStorage.setItem('usertoken', response.data.token)
+            return response.data.token
         })
         .catch(err => {
-            console.log(err)
+            //    let message = err.response.data.error;
+            console.log(err);
+
         })
 }
 
-export const showPotentialFriends = () => {
+export const register = newUser => {
     return axios
-        .get('api/showPotentialFriends', {
+        .post('api/register', newUser, {
             headers: {
-                Authorization: `Bearer ${localStorage.usertoken}`
+                'Content-Type': 'application/json'
             }
         })
         .then(response => {
-            //return user friends without 
-            return response.data
+            console.log(response)
         })
-        .catch(err => {
-            console.log(err)
-        })
+        .catch((error) => {
+            // Error
+            if (error.response) {
+
+                console.log(error.response.headers);
+            } else if (error.request) {
+
+                console.log(error.request);
+            } else {
+
+                console.log('Error', error.message);
+            }
+            console.log(error.config);
+        });
 }
 
-export const showBirthdays = () => {
+
+
+export const getProfile = () => {
     return axios
-        .get('api/showBirthdays', {
+        .get('api/profile', {
             headers: {
                 Authorization: `Bearer ${localStorage.usertoken}`
             }
         })
         .then(response => {
-            //return user friends without 
+
             return response.data
         })
         .catch(err => {
@@ -88,99 +110,5 @@ export const addNewFriend = (friendId) => {
 }
 
 
-export const register = newUser => {
-    return axios
-        .post('api/register', newUser, {
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        })
-        .then(response => {
-            console.log(response)
-        })
-        .catch((error) => {
-            // Error
-            if (error.response) {
-                // The request was made and the server responded with a status code
-                // that falls out of the range of 2xx
-                console.log(error.response.data);
-                console.log(error.response.status);
-                console.log(error.response.headers);
-            } else if (error.request) {
-                // The request was made but no response was received
-                // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
-                // http.ClientRequest in node.js
-                console.log(error.request);
-            } else {
-                // Something happened in setting up the request that triggered an Error
-                console.log('Error', error.message);
-            }
-            console.log(error.config);
-        });
-}
 
-
-export const login = user => {
-    return axios
-        .post(
-            'api/login', {
-                name: user.name,
-                password: user.password
-            }, {
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            }
-        )
-        .then(response => {
-            localStorage.setItem('usertoken', response.data.token)
-            return response.data.token
-        })
-        .catch(err => {
-            console.log(err)
-        })
-}
-
-export const getProfile = () => {
-    return axios
-        .get('api/profile', {
-            headers: {
-                Authorization: `Bearer ${localStorage.usertoken}`
-            }
-        })
-        .then(response => {
-            //return user friends without 
-
-            //TO REMOVE ----
-            console.log(response)
-            const userFriends = JSON.parse(response.data.user.site_users);
-            const currUser = response.data.user;
-
-            //return users friends
-            let userFriendIdArray = currUser.related_friends;
-            if (!!userFriendIdArray && userFriendIdArray.length > 0) {
-                userFriendIdArray = currUser.related_friends.split(',').map(function (item) {
-                    return parseInt(item, 10);
-                });
-            }
-
-            for (var i = 0; i < userFriends.length; i++) {
-                var currFriend = userFriends[i];
-                if (!!userFriendIdArray && userFriendIdArray.length > 0) {
-                    if (userFriendIdArray.indexOf(parseInt(currFriend.id)) > -1) {
-                        currFriend.isFriend = true;
-                    }
-                }
-
-            }
-            response.data.user.site_users = userFriends;
-            //----------
-            response.data.user.site_all_users = JSON.parse(response.data.user.site_all_users);
-
-            return response.data
-        })
-        .catch(err => {
-            console.log(err)
-        })
-}
 

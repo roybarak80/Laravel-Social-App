@@ -83336,28 +83336,16 @@ function (_React$Component) {
   _createClass(FriendsList, [{
     key: "render",
     value: function render() {
-      var _this = this;
-
-      var site_memebers = this.props.site_memebers; // console.log(site_memebers)
-
-      var listmembers = site_memebers.map(function (item, index) {
+      var currUsersFriends = this.props.currUsersFriends;
+      var listUsersFriends = currUsersFriends.map(function (item, index) {
         return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("li", {
           className: "d-flex justify-content-between list-group-item",
-          key: item.id
-        }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", null, item.name, " | ", item.id), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", null, item.isFriend == 1 ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", {
-          className: "fa fa-users"
-        }) : react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
-          value: item.id,
-          onClick: function onClick() {
-            return _this.props.onAddFriend(item.id);
-          },
-          className: "btn btn-primary btn-xs",
-          title: "Add New Friend"
-        }, "+Add")));
+          key: index
+        }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", null, item.friend_name, " "));
       });
       return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("ul", {
         className: "list-group"
-      }, listmembers);
+      }, listUsersFriends);
     }
   }]);
 
@@ -83874,10 +83862,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! moment */ "./node_modules/moment/moment.js");
 /* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(moment__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var _UserFunctions__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./UserFunctions */ "./resources/js/components/UserFunctions.js");
-/* harmony import */ var _FriendsList__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./FriendsList */ "./resources/js/components/FriendsList.js");
+/* harmony import */ var _SiteMembersList__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./SiteMembersList */ "./resources/js/components/SiteMembersList.js");
 /* harmony import */ var _FriendsBirthDays__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./FriendsBirthDays */ "./resources/js/components/FriendsBirthDays.js");
 /* harmony import */ var _PotentialFriendsList__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./PotentialFriendsList */ "./resources/js/components/PotentialFriendsList.js");
 /* harmony import */ var _UserHobbies__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./UserHobbies */ "./resources/js/components/UserHobbies.js");
+/* harmony import */ var _FriendsList__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./FriendsList */ "./resources/js/components/FriendsList.js");
+/* harmony import */ var _UpComingBirthDaysList__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./UpComingBirthDaysList */ "./resources/js/components/UpComingBirthDaysList.js");
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -83895,7 +83885,6 @@ function _assertThisInitialized(self) { if (self === void 0) { throw new Referen
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
 
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
-
 
 
 
@@ -83924,7 +83913,8 @@ function (_Component) {
       name: '',
       user_bday: '',
       members: [],
-      related_friends: [],
+      usersFriends: [],
+      upComingBirthDays: [],
       isShowBirthdays: false,
       isShowAllFriends: false,
       isShowPotentialFriends: false,
@@ -83950,27 +83940,15 @@ function (_Component) {
 
       Object(_UserFunctions__WEBPACK_IMPORTED_MODULE_2__["getProfile"])().then(function (res) {
         _this2.setState({
-          userId: res.user.id,
-          name: res.user.name,
-          user_bday: res.user.user_birthday,
-          related_friends: res.user.related_friends,
-          // members: res.user.site_users,
-          site_memebers: res.user.site_all_users
-        });
-      });
-      Object(_UserFunctions__WEBPACK_IMPORTED_MODULE_2__["getUserHobbies"])().then(function (res) {
-        _this2.setState({
-          usersHobbiesList: res.userHobbies
-        });
-      });
-      Object(_UserFunctions__WEBPACK_IMPORTED_MODULE_2__["showPotentialFriends"])().then(function (res) {
-        _this2.setState({
-          potentialFriends: res.potentialFriends
-        });
-      });
-      Object(_UserFunctions__WEBPACK_IMPORTED_MODULE_2__["showBirthdays"])().then(function (res) {
-        _this2.setState({
-          friendsBDays: res.friendsBirthDays
+          userId: res.loggedUserData.id,
+          name: res.loggedUserData.name,
+          user_bday: res.loggedUserData.user_birthday,
+          usersHobbiesList: JSON.parse(res.loggedUserData.userHobbies),
+          potentialFriends: JSON.parse(res.loggedUserData.potentialFriends),
+          friendsBDays: JSON.parse(res.loggedUserData.friendsBirthDays),
+          site_memebers: JSON.parse(res.loggedUserData.site_all_users),
+          usersFriends: JSON.parse(res.loggedUserData.usersFriends),
+          upComingBirthDays: JSON.parse(res.loggedUserData.upComingBirthDays)
         });
       });
     }
@@ -84010,12 +83988,7 @@ function (_Component) {
       Object(_UserFunctions__WEBPACK_IMPORTED_MODULE_2__["addNewFriend"])(friendId).then(function (res) {
         Object(_UserFunctions__WEBPACK_IMPORTED_MODULE_2__["getProfile"])().then(function (res) {
           _this3.setState({
-            userId: res.user.id,
-            name: res.user.name,
-            hobbies: res.user.hobbies,
-            user_bday: res.user.user_birthday,
-            related_friends: res.user.related_friends,
-            site_memebers: res.user.site_all_users
+            site_memebers: JSON.parse(res.loggedUserData.site_all_users)
           });
         });
       });
@@ -84113,14 +84086,16 @@ function (_Component) {
         className: "col-md-12 d-flex"
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "friends-list scrollbar scrollbar-wrapper"
-      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_FriendsList__WEBPACK_IMPORTED_MODULE_3__["default"], {
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_SiteMembersList__WEBPACK_IMPORTED_MODULE_3__["default"], {
         onAddFriend: this.onAddFriend,
         site_memebers: this.state.site_memebers
       })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "flex-grow-1 data-wrapper d-flex"
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "flex-fill"
-      }, this.state.isShowAllFriends ? 'isShowAllFriends' : ''), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+      }, this.state.isShowAllFriends ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_FriendsList__WEBPACK_IMPORTED_MODULE_7__["default"], {
+        currUsersFriends: this.state.usersFriends
+      }) : ''), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "flex-fill"
       }, this.state.isShowBirthdays ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_FriendsBirthDays__WEBPACK_IMPORTED_MODULE_4__["default"], {
         friendsBirthDays: this.state.friendsBDays
@@ -84130,7 +84105,9 @@ function (_Component) {
         currPotentialFriends: this.state.potentialFriends
       }) : ''), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "flex-fill"
-      }, this.state.isShowUpcomingBirthdays ? 'isShowUpcomingBirthdays' : '')))))));
+      }, this.state.isShowUpcomingBirthdays ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_UpComingBirthDaysList__WEBPACK_IMPORTED_MODULE_8__["default"], {
+        currUpComingBirthDays: this.state.upComingBirthDays
+      }) : '')))))));
     }
   }]);
 
@@ -84264,56 +84241,211 @@ function (_Component) {
 
 /***/ }),
 
-/***/ "./resources/js/components/UserFunctions.js":
-/*!**************************************************!*\
-  !*** ./resources/js/components/UserFunctions.js ***!
-  \**************************************************/
-/*! exports provided: getUserHobbies, showPotentialFriends, showBirthdays, logOut, addNewFriend, register, login, getProfile */
+/***/ "./resources/js/components/SiteMembersList.js":
+/*!****************************************************!*\
+  !*** ./resources/js/components/SiteMembersList.js ***!
+  \****************************************************/
+/*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getUserHobbies", function() { return getUserHobbies; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "showPotentialFriends", function() { return showPotentialFriends; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "showBirthdays", function() { return showBirthdays; });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+
+
+var SiteMembersList =
+/*#__PURE__*/
+function (_React$Component) {
+  _inherits(SiteMembersList, _React$Component);
+
+  function SiteMembersList() {
+    _classCallCheck(this, SiteMembersList);
+
+    return _possibleConstructorReturn(this, _getPrototypeOf(SiteMembersList).apply(this, arguments));
+  }
+
+  _createClass(SiteMembersList, [{
+    key: "render",
+    value: function render() {
+      var _this = this;
+
+      var site_memebers = this.props.site_memebers; // console.log(site_memebers)
+
+      var listmembers = site_memebers.map(function (item, index) {
+        return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("li", {
+          className: "d-flex justify-content-between list-group-item",
+          key: item.id
+        }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", null, item.name, " | ", item.id), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", null, item.isFriend == 1 ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", {
+          className: "fa fa-users"
+        }) : react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
+          value: item.id,
+          onClick: function onClick() {
+            return _this.props.onAddFriend(item.id);
+          },
+          className: "btn btn-primary btn-xs",
+          title: "Add New Friend"
+        }, "+Add")));
+      });
+      return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("ul", {
+        className: "list-group"
+      }, listmembers);
+    }
+  }]);
+
+  return SiteMembersList;
+}(react__WEBPACK_IMPORTED_MODULE_0___default.a.Component);
+
+/* harmony default export */ __webpack_exports__["default"] = (SiteMembersList);
+
+/***/ }),
+
+/***/ "./resources/js/components/UpComingBirthDaysList.js":
+/*!**********************************************************!*\
+  !*** ./resources/js/components/UpComingBirthDaysList.js ***!
+  \**********************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! moment */ "./node_modules/moment/moment.js");
+/* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(moment__WEBPACK_IMPORTED_MODULE_1__);
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+
+
+
+var UpComingBirthDaysList =
+/*#__PURE__*/
+function (_React$Component) {
+  _inherits(UpComingBirthDaysList, _React$Component);
+
+  function UpComingBirthDaysList() {
+    _classCallCheck(this, UpComingBirthDaysList);
+
+    return _possibleConstructorReturn(this, _getPrototypeOf(UpComingBirthDaysList).apply(this, arguments));
+  }
+
+  _createClass(UpComingBirthDaysList, [{
+    key: "render",
+    value: function render() {
+      var currUpComingBirthDays = this.props.currUpComingBirthDays;
+      var listUpComingBirthDays = currUpComingBirthDays.map(function (item, index) {
+        return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("li", {
+          className: "d-flex justify-content-between list-group-item",
+          key: item.id
+        }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, item.name, " "), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, item.user_birthday ? moment__WEBPACK_IMPORTED_MODULE_1___default()(item.user_birthday).format("DD/MM/YYYY") : '', " "));
+      });
+      return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("ul", {
+        className: "list-group"
+      }, listUpComingBirthDays);
+    }
+  }]);
+
+  return UpComingBirthDaysList;
+}(react__WEBPACK_IMPORTED_MODULE_0___default.a.Component);
+
+/* harmony default export */ __webpack_exports__["default"] = (UpComingBirthDaysList);
+
+/***/ }),
+
+/***/ "./resources/js/components/UserFunctions.js":
+/*!**************************************************!*\
+  !*** ./resources/js/components/UserFunctions.js ***!
+  \**************************************************/
+/*! exports provided: login, register, getProfile, logOut, addNewFriend */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "login", function() { return login; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "register", function() { return register; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getProfile", function() { return getProfile; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "logOut", function() { return logOut; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "addNewFriend", function() { return addNewFriend; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "register", function() { return register; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "login", function() { return login; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getProfile", function() { return getProfile; });
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
 
-var getUserHobbies = function getUserHobbies() {
-  return axios__WEBPACK_IMPORTED_MODULE_0___default.a.get('api/getUserHobbies', {
+var login = function login(user) {
+  return axios__WEBPACK_IMPORTED_MODULE_0___default.a.post('api/login', {
+    name: user.name,
+    password: user.password
+  }, {
     headers: {
-      Authorization: "Bearer ".concat(localStorage.usertoken)
+      'Content-Type': 'application/json'
     }
   }).then(function (response) {
-    return response.data;
+    console.log(response);
+    localStorage.setItem('usertoken', response.data.token);
+    return response.data.token;
   })["catch"](function (err) {
+    //    let message = err.response.data.error;
     console.log(err);
   });
 };
-var showPotentialFriends = function showPotentialFriends() {
-  return axios__WEBPACK_IMPORTED_MODULE_0___default.a.get('api/showPotentialFriends', {
+var register = function register(newUser) {
+  return axios__WEBPACK_IMPORTED_MODULE_0___default.a.post('api/register', newUser, {
     headers: {
-      Authorization: "Bearer ".concat(localStorage.usertoken)
+      'Content-Type': 'application/json'
     }
   }).then(function (response) {
-    //return user friends without 
-    return response.data;
-  })["catch"](function (err) {
-    console.log(err);
+    console.log(response);
+  })["catch"](function (error) {
+    // Error
+    if (error.response) {
+      console.log(error.response.headers);
+    } else if (error.request) {
+      console.log(error.request);
+    } else {
+      console.log('Error', error.message);
+    }
+
+    console.log(error.config);
   });
 };
-var showBirthdays = function showBirthdays() {
-  return axios__WEBPACK_IMPORTED_MODULE_0___default.a.get('api/showBirthdays', {
+var getProfile = function getProfile() {
+  return axios__WEBPACK_IMPORTED_MODULE_0___default.a.get('api/profile', {
     headers: {
       Authorization: "Bearer ".concat(localStorage.usertoken)
     }
   }).then(function (response) {
-    //return user friends without 
     return response.data;
   })["catch"](function (err) {
     console.log(err);
@@ -84348,87 +84480,6 @@ var addNewFriend = function addNewFriend(friendId) {
       "Content-type": "application/json",
       Authorization: "Bearer ".concat(localStorage.usertoken)
     }
-  });
-};
-var register = function register(newUser) {
-  return axios__WEBPACK_IMPORTED_MODULE_0___default.a.post('api/register', newUser, {
-    headers: {
-      'Content-Type': 'application/json'
-    }
-  }).then(function (response) {
-    console.log(response);
-  })["catch"](function (error) {
-    // Error
-    if (error.response) {
-      // The request was made and the server responded with a status code
-      // that falls out of the range of 2xx
-      console.log(error.response.data);
-      console.log(error.response.status);
-      console.log(error.response.headers);
-    } else if (error.request) {
-      // The request was made but no response was received
-      // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
-      // http.ClientRequest in node.js
-      console.log(error.request);
-    } else {
-      // Something happened in setting up the request that triggered an Error
-      console.log('Error', error.message);
-    }
-
-    console.log(error.config);
-  });
-};
-var login = function login(user) {
-  return axios__WEBPACK_IMPORTED_MODULE_0___default.a.post('api/login', {
-    name: user.name,
-    password: user.password
-  }, {
-    headers: {
-      'Content-Type': 'application/json'
-    }
-  }).then(function (response) {
-    localStorage.setItem('usertoken', response.data.token);
-    return response.data.token;
-  })["catch"](function (err) {
-    console.log(err);
-  });
-};
-var getProfile = function getProfile() {
-  return axios__WEBPACK_IMPORTED_MODULE_0___default.a.get('api/profile', {
-    headers: {
-      Authorization: "Bearer ".concat(localStorage.usertoken)
-    }
-  }).then(function (response) {
-    //return user friends without 
-    //TO REMOVE ----
-    console.log(response);
-    var userFriends = JSON.parse(response.data.user.site_users);
-    var currUser = response.data.user; //return users friends
-
-    var userFriendIdArray = currUser.related_friends;
-
-    if (!!userFriendIdArray && userFriendIdArray.length > 0) {
-      userFriendIdArray = currUser.related_friends.split(',').map(function (item) {
-        return parseInt(item, 10);
-      });
-    }
-
-    for (var i = 0; i < userFriends.length; i++) {
-      var currFriend = userFriends[i];
-
-      if (!!userFriendIdArray && userFriendIdArray.length > 0) {
-        if (userFriendIdArray.indexOf(parseInt(currFriend.id)) > -1) {
-          currFriend.isFriend = true;
-        }
-      }
-    }
-
-    response.data.user.site_users = userFriends; //----------
-
-    response.data.user.site_all_users = JSON.parse(response.data.user.site_all_users);
-    return response.data;
-  })["catch"](function (err) {
-    console.log(err);
   });
 };
 

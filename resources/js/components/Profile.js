@@ -2,15 +2,15 @@ import React, { Component } from 'react';
 import moment from 'moment';
 
 import { getProfile } from './UserFunctions';
-import { getUserHobbies } from './UserFunctions';
+
 // import { addFriend } from './UserFunctions';
 import { addNewFriend } from './UserFunctions';
-import { showBirthdays } from './UserFunctions';
-import { showPotentialFriends } from './UserFunctions';
-import FriendsList from './FriendsList';
+import SiteMembersList from './SiteMembersList';
 import FriendsBirthDays from './FriendsBirthDays';
 import PotentialFriendsList from './PotentialFriendsList';
 import UserHobbies from './UserHobbies';
+import FriendsList from './FriendsList';
+import UpComingBirthDaysList from './UpComingBirthDaysList';
 
 class Profile extends Component {
     constructor() {
@@ -19,7 +19,8 @@ class Profile extends Component {
             name: '',
             user_bday: '',
             members: [],
-            related_friends: [],
+            usersFriends: [],
+            upComingBirthDays: [],
             isShowBirthdays: false,
             isShowAllFriends: false,
             isShowPotentialFriends: false,
@@ -44,39 +45,19 @@ class Profile extends Component {
         getProfile().then(res => {
 
             this.setState({
-                userId: res.user.id,
-                name: res.user.name,
-                user_bday: res.user.user_birthday,
-                related_friends: res.user.related_friends,
-                // members: res.user.site_users,
-                site_memebers: res.user.site_all_users,
-
+                userId: res.loggedUserData.id,
+                name: res.loggedUserData.name,
+                user_bday: res.loggedUserData.user_birthday,
+                usersHobbiesList: JSON.parse(res.loggedUserData.userHobbies),
+                potentialFriends: JSON.parse(res.loggedUserData.potentialFriends),
+                friendsBDays: JSON.parse(res.loggedUserData.friendsBirthDays),
+                site_memebers: JSON.parse(res.loggedUserData.site_all_users),
+                usersFriends: JSON.parse(res.loggedUserData.usersFriends),
+                upComingBirthDays: JSON.parse(res.loggedUserData.upComingBirthDays),
             })
 
         })
 
-        getUserHobbies().then(res => {
-
-            this.setState({
-                usersHobbiesList: res.userHobbies,
-            })
-        })
-
-        showPotentialFriends().then(res => {
-
-            this.setState({
-                potentialFriends: res.potentialFriends,
-            })
-
-        })
-
-        showBirthdays().then(res => {
-
-            this.setState({
-                friendsBDays: res.friendsBirthDays,
-            })
-
-        })
     }
 
     handleShowUpcomingBirthdays() {
@@ -112,13 +93,7 @@ class Profile extends Component {
                 getProfile().then(res => {
 
                     this.setState({
-                        userId: res.user.id,
-                        name: res.user.name,
-                        hobbies: res.user.hobbies,
-                        user_bday: res.user.user_birthday,
-                        related_friends: res.user.related_friends,
-                        site_memebers: res.user.site_all_users,
-
+                        site_memebers: JSON.parse(res.loggedUserData.site_all_users),
                     })
 
                 })
@@ -216,16 +191,18 @@ class Profile extends Component {
                         <div className="row">
                             <div className="col-md-12 d-flex">
                                 <div className="friends-list scrollbar scrollbar-wrapper">
-                                    <FriendsList onAddFriend={this.onAddFriend}
-                                        site_memebers={this.state.site_memebers}></FriendsList>
+                                    <SiteMembersList onAddFriend={this.onAddFriend}
+                                        site_memebers={this.state.site_memebers}></SiteMembersList>
                                 </div>
                                 <div className="flex-grow-1 data-wrapper d-flex">
-                                    <div className="flex-fill">{this.state.isShowAllFriends ? 'isShowAllFriends' : ''}</div>
+                                    <div className="flex-fill">{this.state.isShowAllFriends ? <FriendsList
+                                        currUsersFriends={this.state.usersFriends}></FriendsList> : ''}</div>
                                     <div className="flex-fill">{this.state.isShowBirthdays ? <FriendsBirthDays
                                         friendsBirthDays={this.state.friendsBDays}></FriendsBirthDays> : ''}</div>
                                     <div className="flex-fill">{this.state.isShowPotentialFriends ? <PotentialFriendsList
                                         currPotentialFriends={this.state.potentialFriends}></PotentialFriendsList> : ''}</div>
-                                    <div className="flex-fill">{this.state.isShowUpcomingBirthdays ? 'isShowUpcomingBirthdays' : ''}</div>
+                                    <div className="flex-fill">{this.state.isShowUpcomingBirthdays ? <UpComingBirthDaysList
+                                        currUpComingBirthDays={this.state.upComingBirthDays}></UpComingBirthDaysList> : ''}</div>
                                 </div>
 
                             </div>

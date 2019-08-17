@@ -11,40 +11,39 @@ use Session;
 
 class User extends Authenticatable implements JWTSubject
 {
-
-    public static function addFriend($userID, $friendID){
+    public static function addFriend($userID, $friendID)
+    {
         // add new freind id
         // get all friends
         // FIFO
         $query = "";
-// print_r($userID);
-// print_r( $friendID);
+        // print_r($userID);
+        // print_r( $friendID);
         $userFriendsIDs = self::getUserFriendsIds($userID);
-        if(count($userFriendsIDs) < 5){
-            print_r( count($userFriendsIDs));
+        if (count($userFriendsIDs) < 5) {
+            print_r(count($userFriendsIDs));
             $query = "INSERT INTO user_friends(user_friends.user_id, user_friends.friend_id)";
             $query .=" VALUES( :userID, :friendID)";
-           
-        }else{
-// TO DOFIFO
+        } else {
+            // TO DOFIFO
         }
 
-        $res = DB::insert($query,  ['userID' => $userID, 'friendID'=>$friendID]);
-       // dd($res);
+        $res = DB::insert($query, ['userID' => $userID, 'friendID'=>$friendID]);
+       
         return $res;
     }
 
-    public static function getUserFriendsIds($userID){
-
-        $query = "SELECT user_id FROM `user_friends` WHERE user_id =:userID";
+    public static function getUserFriendsIds($userID)
+    {
+        $query = "SELECT friend_id FROM `user_friends` WHERE user_id =:userID";
 
         $res = DB::select($query, ['userID' => $userID]);
        
         return $res;
     }
 
-    public static function getAllUsersWithFriendsIndication($userId){
-
+    public static function getAllUsersWithFriendsIndication($userId)
+    {
         $query = "SELECT u.id, u.name,";
         $query .= " EXISTS(SELECT *";
         $query .= " FROM user_friends";
@@ -55,9 +54,9 @@ class User extends Authenticatable implements JWTSubject
        
         return $res;
     }
-    //comment : new.
-    public static function getAllUserFriends($userId){
-
+    
+    public static function getAllUserFriends($userId)
+    {
         $query = "SELECT u.name AS user_name, f.name AS friend_name";
         $query .=" FROM user_friends AS uf";
         $query .=" JOIN users AS u ON u.id = uf.user_id";
@@ -67,11 +66,9 @@ class User extends Authenticatable implements JWTSubject
         $res = DB::select($query, ['userId' => $userId]);
        
         return $res;
-
     }
     public static function getPotentialFriends($userId)
     {
-
         $query = "SELECT users.id,users.name, users.user_birthday,hobbies.hobbie_name";
         $query .=" FROM `users`";
         $query .=" INNER JOIN user_hobbies on user_hobbies.user_id = users.id";
@@ -96,45 +93,24 @@ class User extends Authenticatable implements JWTSubject
         return $res;
     }
 
-    public static function getFriendsBirthDaysDates($userId)
+    public static function getFriendsBirthDaysDates($userID)
     {
-        $id = ['id'=>$userId];
-        $loggedUserData = self::getLoggedUserData();
-        $allMembers = self::getCurrentAllMembrers($id);
-        $loggedUserFriendsArray =  explode(",", $loggedUserData[0]->related_friends);
-
-        $dicUserFriends = [];
-        foreach ($loggedUserFriendsArray as $key=> $userFriendId) {
-            foreach ($allMembers as $key=> $siteMember) {
-                if ($userFriendId == $siteMember->id) {
-                    $dicUserFriends[$siteMember->id] =$siteMember->id;
-                    $memberFriendsIdArr = explode(",", $siteMember->related_friends);
-                    foreach ($memberFriendsIdArr as $memberId) {
-                        if ($memberId !='') {
-                            if (gettype($memberId) !== 'string') {
-                                $dicUserFriends[$memberId] =(string)$memberId;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        // dd($dicUserFriends );
-        $dicUserFriendsIdArray =  array_values($dicUserFriends);
-        $query ="SELECT id,name, user_birthday FROM `users` where DATE_FORMAT(user_birthday, '%m-%d') >=";
+        $query = "SELECT id,name, user_birthday FROM `users` where DATE_FORMAT(user_birthday, '%m-%d') >=";
         $query .=" DATE_FORMAT(NOW(), '%m-%d') and DATE_FORMAT(user_birthday, '%m-%d')<=";
-        $query .="DATE_FORMAT((NOW() + INTERVAL +30 DAY), '%m-%d') and id in (" . implode(',', $dicUserFriendsIdArray) . ") ";
-        $query .="order by DATE_FORMAT(user_birthday, '%m-%d') ASC";
+        $query .=" DATE_FORMAT((NOW() + INTERVAL +14 DAY), '%m-%d') and id in (";
+        $query .=" (SELECT friend_id FROM user_friends where user_id = :userID";
+        $query .=" UNION ";
+        $query .=" SELECT friend_id FROM user_friends where user_id in (SELECT friend_id FROM user_friends where user_id = :userID1)))";
+        $query .=" order by DATE_FORMAT(user_birthday, '%m-%d') ASC";
        
-        $res = DB::select($query);
-        // dd($res);
+        $res = DB::select($query, ['userID' => $userID, 'userID1' => $userID]);
+
         return $res;
-       
     }
     public static function getCurrentAllMembrers($userId)
     {
-        $members = DB::select('select id,name,related_friends from users where id != :userId', ['userId' => $userId['id']]);
-       
+        $members = DB::select('select id,name,related_friends from users where id != :userId', ['userId' => $userId]);
+        
         return $members;
     }
 
@@ -150,42 +126,55 @@ class User extends Authenticatable implements JWTSubject
         return $userHobbies;
     }
 
-    public static function getLoggedUserData()
+    public static function getLoggedUserData($userId)
     {
-        $loggedUserId = Session::get("userID");
-        $loggedUserData = DB::select('select id,name,related_friends from users where id = :loggedUserId', ['loggedUserId' => $loggedUserId]);
+       
+        $loggedUserData = DB::select('select id,name,related_friends from users where id = :loggedUserId', ['loggedUserId' => $userId]);
+        
         return $loggedUserData;
     }
 
-    public static function addNewFriendToMember($newFriendId)
+    public static function getUpComingBirthDays()
     {
-        //to do - refactor
-        $loggedUserId = Session::get("userID");
-        $loggedUserData = DB::select('select id,name,related_friends from users where id = :loggedUserId', ['loggedUserId' => $loggedUserId]);
-        $loggedUserFriendsIdsArr = [];
-        $newFriendStr ='';
+        $query = "SELECT id,name, user_birthday FROM `users`";
+        $query .= " WHERE DATE_FORMAT(user_birthday, '%m-%d')";
+        $query .= " BETWEEN DATE_FORMAT(NOW(), '%m-%d')";
+        $query .= " AND DATE_FORMAT((SELECT LAST_DAY(DATE_ADD(NOW(), INTERVAL 12-MONTH(NOW()) MONTH))),'%m-%d' )";
+        $query .= " ORDER by DATE_FORMAT(user_birthday, '%m-%d') ASC";
 
-        if (count($loggedUserData) !== 0) {
-            $loggedUserFriendsIds = $loggedUserData [0]->related_friends;
-            $loggedUserFriendsIdsArr = explode(",", $loggedUserFriendsIds);
-            if (count($loggedUserFriendsIdsArr) < 5) {
-                echo 'count less '.count($loggedUserFriendsIdsArr);
-                $loggedUserFriendsIdsArr[]=$newFriendId;
-                $newFriendStr = implode(",", $loggedUserFriendsIdsArr);
-            } else {
-                array_shift($loggedUserFriendsIdsArr);
-                $loggedUserFriendsIdsArr[]=$newFriendId;
-                $newFriendStr = implode(",", $loggedUserFriendsIdsArr);
-            }
-        } else {
-            $newFriendStr = $newFriendId;
-        }
- 
-        $query = DB::update('update users set related_friends = ? where id = ?', [$newFriendStr , $loggedUserId]);
-        if ($query ==true) {
-            return true;
-        }
+        $res = DB::select($query);
+
+        return $res;
     }
+    // public static function addNewFriendToMember($newFriendId)
+    // {
+    //     //to do - refactor
+    //     $loggedUserId = Session::get("userID");
+    //     $loggedUserData = DB::select('select id,name,related_friends from users where id = :loggedUserId', ['loggedUserId' => $loggedUserId]);
+    //     $loggedUserFriendsIdsArr = [];
+    //     $newFriendStr ='';
+
+    //     if (count($loggedUserData) !== 0) {
+    //         $loggedUserFriendsIds = $loggedUserData [0]->related_friends;
+    //         $loggedUserFriendsIdsArr = explode(",", $loggedUserFriendsIds);
+    //         if (count($loggedUserFriendsIdsArr) < 5) {
+    //             echo 'count less '.count($loggedUserFriendsIdsArr);
+    //             $loggedUserFriendsIdsArr[]=$newFriendId;
+    //             $newFriendStr = implode(",", $loggedUserFriendsIdsArr);
+    //         } else {
+    //             array_shift($loggedUserFriendsIdsArr);
+    //             $loggedUserFriendsIdsArr[]=$newFriendId;
+    //             $newFriendStr = implode(",", $loggedUserFriendsIdsArr);
+    //         }
+    //     } else {
+    //         $newFriendStr = $newFriendId;
+    //     }
+ 
+    //     $query = DB::update('update users set related_friends = ? where id = ?', [$newFriendStr , $loggedUserId]);
+    //     if ($query ==true) {
+    //         return true;
+    //     }
+    // }
 
     private function handleAddingFriends($prmUserData, $prmUserId)
     {

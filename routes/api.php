@@ -17,14 +17,9 @@ Auth::routes();
 Route::post('register', 'UserController@register');
 Route::post('login', 'UserController@login');
 Route::get('logOut', 'UserController@logOut');
-Route::get('profile', 'UserController@getAuthenticatedUser');
-Route::get('showBirthdays', 'UserController@showBirthdays');
-Route::get('showPotentialFriends', 'UserController@showPotentialFriends');
-Route::get('getUserHobbies', 'UserController@getUserHobbies');
-// Route::get('/', function()
-// {
-//     return view( 'layouts/app' );
-// });
+
+Route::get('profile', 'UserProfileController@getAuthenticatedUser');
+
 Route::match(['put'], '/{id}','UserController@addNewFriend');
 
 Route::middleware('auth:api')->get('/{path?}', function (Request $request) {
