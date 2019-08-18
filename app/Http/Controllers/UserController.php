@@ -20,6 +20,7 @@ use Session;
 
 class UserController extends Controller
 {
+
     
 
     public function logOut(Request $request)
@@ -92,15 +93,5 @@ class UserController extends Controller
     }
 
 
-    public function addNewFriend(Request $request)
-    {
-        $newFriendId = $request->all()[0];
-        $loggedUserId = Session::get("userID");
-        User::addFriend($loggedUserId, $newFriendId);
-        //todo-- send success message
-        // if ($addres == true) {
-            
-        //     $request->session()->flash('status', 'Friend add successfuly!');
-        // }
-    }
+
 }

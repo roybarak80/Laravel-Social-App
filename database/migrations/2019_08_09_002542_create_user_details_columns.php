@@ -15,11 +15,8 @@ class CreateUserDetailsColumns extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
            
-           // $table->string('user_id')->after('id');
-            $table->string('hobbies')->after('password');
             $table->date('user_birthday')->after('password');
-            $table->string('related_friends')->after('password');
-            
+           
         });
     }
 

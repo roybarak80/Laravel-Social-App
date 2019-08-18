@@ -9,7 +9,7 @@ class FriendsBirthDays extends React.Component {
         const { friendsBirthDays } = this.props;
         const listFriendsBirthDays = friendsBirthDays.map((item, index) => (
 
-            <li key={item.id} >
+            <li className="d-flex justify-content-between list-group-item" key={item.id} >
                 <span>{item.name}</span>
                 <span >
                     {item.user_birthday ? moment(item.user_birthday).format("DD/MM/YYYY") : ''}
@@ -18,7 +18,7 @@ class FriendsBirthDays extends React.Component {
             </li>
         ));
         return (
-            <div>
+            <div className="list-group">
                 {listFriendsBirthDays}
             </div>
         );

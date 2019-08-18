@@ -11,16 +11,20 @@ class PotentialFriendsList extends React.Component {
         const { currPotentialFriends } = this.props;
         const potentialFriendsList = currPotentialFriends.map((item, index) => (
 
-            <li key={item.id} >
-                <span className="text-capitalize">{item.name}</span>
-                <span className="text-capitalize">{item.hobbie_name}</span>
-                <span>
-                    {item.user_birthday ? moment(item.user_birthday).format("DD/MM/YYYY") : ''}
-                </span>
-            </li>
+            <li className="d-flex justify-content-between list-group-item flex-column" key={item.id} >
+                <div className="d-flex justify-content-between  mb-2">
+                    <span className="text-capitalize font-weight-bold">{item.name}</span>
+                    <span><span className="text-capitalize">Born : </span>{item.user_birthday ? moment(item.user_birthday).format("DD/MM/YYYY") : ''}</span>
+                </div>
+                <div className="text-capitalize mb-2">Related Hobbie</div>
+                <div className="d-flex justify-content-between flex-column">
+                    <span className="text-capitalize user-hobbie">{item.hobbie_name}</span>
+                </div>
+
+            </li >
         ));
         return (
-            <div>
+            <div className="list-group">
                 {potentialFriendsList}
             </div>
         );

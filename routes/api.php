@@ -20,7 +20,7 @@ Route::get('logOut', 'UserController@logOut');
 
 Route::get('profile', 'UserProfileController@getAuthenticatedUser');
 
-Route::match(['put'], '/{id}','UserController@addNewFriend');
+Route::match(['put'], '/{id}','UserProfileController@addNewFriend');
 
 Route::middleware('auth:api')->get('/{path?}', function (Request $request) {
     return $request->user();

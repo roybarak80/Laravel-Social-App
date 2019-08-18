@@ -24,11 +24,11 @@ class NavBar extends Component {
                         Login
           </Link>
                 </li>
-                <li className="nav-item">
+                {/* <li className="nav-item">
                     <Link to="/register" className="nav-link">
                         Register
           </Link>
-                </li>
+                </li> */}
             </ul>
         )
 

@@ -83277,10 +83277,13 @@ function (_React$Component) {
       var friendsBirthDays = this.props.friendsBirthDays;
       var listFriendsBirthDays = friendsBirthDays.map(function (item, index) {
         return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("li", {
+          className: "d-flex justify-content-between list-group-item",
           key: item.id
         }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", null, item.name), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", null, item.user_birthday ? moment__WEBPACK_IMPORTED_MODULE_1___default()(item.user_birthday).format("DD/MM/YYYY") : ''));
       });
-      return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, listFriendsBirthDays);
+      return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "list-group"
+      }, listFriendsBirthDays);
     }
   }]);
 
@@ -83723,12 +83726,7 @@ function (_Component) {
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_1__["Link"], {
         to: "/login",
         className: "nav-link"
-      }, "Login")), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("li", {
-        className: "nav-item"
-      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_1__["Link"], {
-        to: "/register",
-        className: "nav-link"
-      }, "Register")));
+      }, "Login")));
       var userLink = react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("ul", {
         className: "navbar-nav"
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("li", {
@@ -83830,14 +83828,25 @@ function (_React$Component) {
       var currPotentialFriends = this.props.currPotentialFriends;
       var potentialFriendsList = currPotentialFriends.map(function (item, index) {
         return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("li", {
+          className: "d-flex justify-content-between list-group-item flex-column",
           key: item.id
+        }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+          className: "d-flex justify-content-between  mb-2"
         }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
+          className: "text-capitalize font-weight-bold"
+        }, item.name), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
           className: "text-capitalize"
-        }, item.name), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
-          className: "text-capitalize"
-        }, item.hobbie_name), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", null, item.user_birthday ? moment__WEBPACK_IMPORTED_MODULE_1___default()(item.user_birthday).format("DD/MM/YYYY") : ''));
+        }, "Born : "), item.user_birthday ? moment__WEBPACK_IMPORTED_MODULE_1___default()(item.user_birthday).format("DD/MM/YYYY") : '')), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+          className: "text-capitalize mb-2"
+        }, "Related Hobbie"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+          className: "d-flex justify-content-between flex-column"
+        }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
+          className: "text-capitalize user-hobbie"
+        }, item.hobbie_name)));
       });
-      return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, potentialFriendsList);
+      return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "list-group"
+      }, potentialFriendsList);
     }
   }]);
 
@@ -83971,7 +83980,7 @@ function (_Component) {
     value: function handleShowAllFriends() {
       this.setState({
         isShowAllFriends: !this.state.isShowAllFriends
-      }); // console.log(this.state.isShowAllFriends);
+      });
     }
   }, {
     key: "handleShowBirthdays",
@@ -84010,7 +84019,7 @@ function (_Component) {
         className: "col-md-12 d-flex justify-content-center border-bottom form-group"
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
         className: "user-name text-capitalize"
-      }, this.state.name ? this.state.name : '', "&nbps ", this.state.userId))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+      }, this.state.name ? this.state.name : ''))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "row"
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "col-md-12 d-flex justify-content-center align-items-center form-group"
@@ -84029,13 +84038,22 @@ function (_Component) {
       }) : ''))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "row"
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "col-md-12"
-      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("ul", {
-        className: "list-inline d-flex justify-content-center"
-      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("li", {
-        className: "list-inline-item"
+        className: "col-md-12 d-flex"
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "form-check"
+        className: "item-wrapper"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", {
+        className: "d-flex justify-content-center"
+      }, "Site Users"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "item-wrapper friends-list scrollbar scrollbar-wrapper"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_SiteMembersList__WEBPACK_IMPORTED_MODULE_3__["default"], {
+        onAddFriend: this.onAddFriend,
+        site_memebers: this.state.site_memebers
+      }))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "item-wrapper"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "d-flex flex-column"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "form-check "
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", {
         className: "form-check-label"
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
@@ -84044,8 +84062,14 @@ function (_Component) {
         className: "form-check-input",
         checked: this.state.isShowAllFriends,
         onChange: this.handleShowAllFriends
-      }), "Show All Friends"))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("li", {
-        className: "list-inline-item"
+      }), "Show All Friends")), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "flex-fill"
+      }, this.state.isShowAllFriends ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_FriendsList__WEBPACK_IMPORTED_MODULE_7__["default"], {
+        currUsersFriends: this.state.usersFriends
+      }) : ''))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "item-wrapper"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "d-flex flex-column"
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "form-check"
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", {
@@ -84056,8 +84080,14 @@ function (_Component) {
         className: "form-check-input",
         checked: this.state.isShowBirthdays,
         onChange: this.handleShowBirthdays
-      }), "Show Birthdays"))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("li", {
-        className: "list-inline-item"
+      }), "Show Birthdays")), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "flex-fill"
+      }, this.state.isShowBirthdays ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_FriendsBirthDays__WEBPACK_IMPORTED_MODULE_4__["default"], {
+        friendsBirthDays: this.state.friendsBDays
+      }) : ''))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "item-wrapper"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "d-flex flex-column"
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "form-check"
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", {
@@ -84068,8 +84098,14 @@ function (_Component) {
         className: "form-check-input",
         checked: this.state.isShowPotentialFriends,
         onChange: this.handlePotentialFriends
-      }), "Show Potential Friends"))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("li", {
-        className: "list-inline-item"
+      }), "Show Potential Friends")), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "flex-fill"
+      }, this.state.isShowPotentialFriends ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_PotentialFriendsList__WEBPACK_IMPORTED_MODULE_5__["default"], {
+        currPotentialFriends: this.state.potentialFriends
+      }) : ''))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "item-wrapper"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "d-flex flex-column"
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "form-check"
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", {
@@ -84080,34 +84116,11 @@ function (_Component) {
         className: "form-check-input",
         checked: this.state.isShowUpcomingBirthdays,
         onChange: this.handleShowUpcomingBirthdays
-      }), "Show Upcoming Birthdays")))))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "row"
-      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "col-md-12 d-flex"
-      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "friends-list scrollbar scrollbar-wrapper"
-      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_SiteMembersList__WEBPACK_IMPORTED_MODULE_3__["default"], {
-        onAddFriend: this.onAddFriend,
-        site_memebers: this.state.site_memebers
-      })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "flex-grow-1 data-wrapper d-flex"
-      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "flex-fill"
-      }, this.state.isShowAllFriends ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_FriendsList__WEBPACK_IMPORTED_MODULE_7__["default"], {
-        currUsersFriends: this.state.usersFriends
-      }) : ''), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "flex-fill"
-      }, this.state.isShowBirthdays ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_FriendsBirthDays__WEBPACK_IMPORTED_MODULE_4__["default"], {
-        friendsBirthDays: this.state.friendsBDays
-      }) : ''), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "flex-fill"
-      }, this.state.isShowPotentialFriends ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_PotentialFriendsList__WEBPACK_IMPORTED_MODULE_5__["default"], {
-        currPotentialFriends: this.state.potentialFriends
-      }) : ''), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+      }), "Show Upcoming Birthdays")), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "flex-fill"
       }, this.state.isShowUpcomingBirthdays ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_UpComingBirthDaysList__WEBPACK_IMPORTED_MODULE_8__["default"], {
         currUpComingBirthDays: this.state.upComingBirthDays
-      }) : '')))))));
+      }) : ''))))))));
     }
   }]);
 
@@ -84412,7 +84425,6 @@ var login = function login(user) {
       'Content-Type': 'application/json'
     }
   }).then(function (response) {
-    console.log(response);
     localStorage.setItem('usertoken', response.data.token);
     return response.data.token;
   })["catch"](function (err) {
@@ -84423,10 +84435,9 @@ var login = function login(user) {
 var register = function register(newUser) {
   return axios__WEBPACK_IMPORTED_MODULE_0___default.a.post('api/register', newUser, {
     headers: {
-      'Content-Type': 'application/json'
+      Authorization: "Bearer ".concat(localStorage.usertoken)
     }
-  }).then(function (response) {
-    console.log(response);
+  }).then(function (response) {// console.log(response)
   })["catch"](function (error) {
     // Error
     if (error.response) {
@@ -84448,7 +84459,14 @@ var getProfile = function getProfile() {
   }).then(function (response) {
     return response.data;
   })["catch"](function (err) {
-    console.log(err);
+    var message = err.response.status;
+
+    if (err.response.status) {
+      localStorage.clear();
+      window.location.href = '/';
+    }
+
+    console.log(message);
   });
 };
 var logOut = function logOut() {

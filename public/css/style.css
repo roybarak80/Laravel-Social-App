@@ -37,9 +37,14 @@
 }
 
 .user-hobbie{
+    width: fit-content;
     padding: 2px 8px;
     border: 1px solid #e2e2e2;
     border-radius: 2px;
+}
+
+.user-hobbie:hover{
+    background-color: #e2e2e2;
 }
 
 .no-margin{
@@ -69,10 +74,10 @@
 
 .scrollbar
 {
-	margin-left: 30px;
+	
 	float: left;
 	height: 300px;
-	width: 65px;
+	width: 100%;
 	background: #F5F5F5;
 	overflow-y: scroll;
 	margin-bottom: 25px;
@@ -101,4 +106,24 @@
 .profile-wrapper{
     position: relative;
     margin-top: 110px;
+}
+
+.item-wrapper{
+    flex:1;
+    
+}
+
+.form-check{
+    margin-bottom: 8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.item-wrapper:not(:last-child){
+    margin-right: 10px;
+}
+.show-details{
+    flex-direction: row;
+    align-items: stretch;
+   
 }

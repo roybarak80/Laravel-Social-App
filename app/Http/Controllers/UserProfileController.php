@@ -15,12 +15,20 @@ class UserProfileController extends Controller
         $this->middleware('jwt.auth');
     }
 
+    public function addNewFriend(Request $request)
+    {
+        $newFriendId = $request->all()[0];
+        $userId = $request->user()->id;
+        User::addFriend($userId, $newFriendId);
+      
+    }
+
     public function getAuthenticatedUser()
     {
         try {
             if (! $user = JWTAuth::parseToken()->authenticate()) {
+                
                 return redirect('/login')->with('status', 'user not found!');
-               // return response()->json(['error' => 'user not found'], 404);
             }
         } catch (Tymon\JWTAuth\Exceptions\TokenExpiredException $e) {
             return response()->json(['token expired'], $e->getStatusCode());
@@ -39,7 +47,7 @@ class UserProfileController extends Controller
         $userId = Auth::id();
 
         $site_all_users = User::getAllUsersWithFriendsIndication($userId);
-        
+
         $userHobbies = User::getUserHobbies($userId);
        
         $potentialFriends = User::getPotentialFriends($userId);

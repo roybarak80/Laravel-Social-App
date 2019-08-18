@@ -14,7 +14,7 @@ export const login = user => {
             }
         )
         .then(response => {
-            console.log(response);
+
             localStorage.setItem('usertoken', response.data.token)
             return response.data.token
         })
@@ -29,11 +29,11 @@ export const register = newUser => {
     return axios
         .post('api/register', newUser, {
             headers: {
-                'Content-Type': 'application/json'
+                Authorization: `Bearer ${localStorage.usertoken}`
             }
         })
         .then(response => {
-            console.log(response)
+            // console.log(response)
         })
         .catch((error) => {
             // Error
@@ -61,11 +61,16 @@ export const getProfile = () => {
             }
         })
         .then(response => {
-
             return response.data
         })
         .catch(err => {
-            console.log(err)
+
+            let message = err.response.status;
+            if (err.response.status) {
+                localStorage.clear();
+                window.location.href = '/';
+            }
+            console.log(message);
         })
 }
 

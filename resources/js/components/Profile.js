@@ -75,14 +75,12 @@ class Profile extends Component {
     handleShowAllFriends() {
 
         this.setState({ isShowAllFriends: !this.state.isShowAllFriends });
-        // console.log(this.state.isShowAllFriends);
 
     }
 
     handleShowBirthdays() {
 
         this.setState({ isShowBirthdays: !this.state.isShowBirthdays });
-
 
     }
 
@@ -113,7 +111,6 @@ class Profile extends Component {
                             <div className="col-md-12 d-flex justify-content-center border-bottom form-group">
                                 <span className="user-name text-capitalize">
                                     {this.state.name ? this.state.name : ''}
-                                    &nbps {this.state.userId}
                                 </span>
                             </div>
                         </div>
@@ -130,11 +127,18 @@ class Profile extends Component {
                             </div>
                         </div>
                         <div className="row">
-                            <div className="col-md-12">
-                                <ul className="list-inline d-flex justify-content-center">
+                            <div className="col-md-12 d-flex">
+                                <div className="item-wrapper">
+                                    <label className="d-flex justify-content-center">Site Users</label>
+                                    <div className="item-wrapper friends-list scrollbar scrollbar-wrapper">
+                                        <SiteMembersList onAddFriend={this.onAddFriend}
+                                            site_memebers={this.state.site_memebers}></SiteMembersList>
 
-                                    <li className="list-inline-item">
-                                        <div className="form-check">
+                                    </div>
+                                </div>
+                                <div className="item-wrapper">
+                                    <div className="d-flex flex-column">
+                                        <div className="form-check ">
                                             <label className="form-check-label">
                                                 <input
                                                     name="isShowAllFriends"
@@ -145,8 +149,12 @@ class Profile extends Component {
                                                 Show All Friends
                                 </label>
                                         </div>
-                                    </li>
-                                    <li className="list-inline-item">
+                                        <div className="flex-fill">{this.state.isShowAllFriends ? <FriendsList
+                                            currUsersFriends={this.state.usersFriends}></FriendsList> : ''}</div>
+                                    </div>
+                                </div>
+                                <div className="item-wrapper">
+                                    <div className="d-flex flex-column">
                                         <div className="form-check">
                                             <label className="form-check-label">
                                                 <input
@@ -156,10 +164,15 @@ class Profile extends Component {
                                                     checked={this.state.isShowBirthdays}
                                                     onChange={this.handleShowBirthdays} />
                                                 Show Birthdays
-                                </label>
+                                           </label>
                                         </div>
-                                    </li>
-                                    <li className="list-inline-item">
+                                        <div className="flex-fill">{this.state.isShowBirthdays ? <FriendsBirthDays
+                                            friendsBirthDays={this.state.friendsBDays}></FriendsBirthDays> : ''}</div>
+                                    </div>
+
+                                </div>
+                                <div className="item-wrapper">
+                                    <div className="d-flex flex-column">
                                         <div className="form-check">
                                             <label className="form-check-label">
                                                 <input
@@ -171,8 +184,13 @@ class Profile extends Component {
                                                 Show Potential Friends
                                 </label>
                                         </div>
-                                    </li>
-                                    <li className="list-inline-item">
+                                        <div className="flex-fill">{this.state.isShowPotentialFriends ? <PotentialFriendsList
+                                            currPotentialFriends={this.state.potentialFriends}></PotentialFriendsList> : ''}</div>
+                                    </div>
+
+                                </div>
+                                <div className="item-wrapper">
+                                    <div className="d-flex flex-column">
                                         <div className="form-check">
                                             <label className="form-check-label">
                                                 <input
@@ -182,32 +200,19 @@ class Profile extends Component {
                                                     checked={this.state.isShowUpcomingBirthdays}
                                                     onChange={this.handleShowUpcomingBirthdays} />
                                                 Show Upcoming Birthdays
-                                </label>
+                                            </label>
                                         </div>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                        <div className="row">
-                            <div className="col-md-12 d-flex">
-                                <div className="friends-list scrollbar scrollbar-wrapper">
-                                    <SiteMembersList onAddFriend={this.onAddFriend}
-                                        site_memebers={this.state.site_memebers}></SiteMembersList>
-                                </div>
-                                <div className="flex-grow-1 data-wrapper d-flex">
-                                    <div className="flex-fill">{this.state.isShowAllFriends ? <FriendsList
-                                        currUsersFriends={this.state.usersFriends}></FriendsList> : ''}</div>
-                                    <div className="flex-fill">{this.state.isShowBirthdays ? <FriendsBirthDays
-                                        friendsBirthDays={this.state.friendsBDays}></FriendsBirthDays> : ''}</div>
-                                    <div className="flex-fill">{this.state.isShowPotentialFriends ? <PotentialFriendsList
-                                        currPotentialFriends={this.state.potentialFriends}></PotentialFriendsList> : ''}</div>
-                                    <div className="flex-fill">{this.state.isShowUpcomingBirthdays ? <UpComingBirthDaysList
-                                        currUpComingBirthDays={this.state.upComingBirthDays}></UpComingBirthDaysList> : ''}</div>
+                                        <div className="flex-fill">{this.state.isShowUpcomingBirthdays ? <UpComingBirthDaysList
+                                            currUpComingBirthDays={this.state.upComingBirthDays}></UpComingBirthDaysList> : ''}</div>
+                                    </div>
+
                                 </div>
 
-                            </div>
 
+                            </div>
                         </div>
+
+
                     </div>
 
 

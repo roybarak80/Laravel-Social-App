@@ -13,24 +13,29 @@ class User extends Authenticatable implements JWTSubject
 {
     public static function addFriend($userID, $friendID)
     {
-        // add new freind id
-        // get all friends
-        // FIFO
-        $query = "";
-        // print_r($userID);
-        // print_r( $friendID);
+        
         $userFriendsIDs = self::getUserFriendsIds($userID);
         if (count($userFriendsIDs) < 5) {
             print_r(count($userFriendsIDs));
             $query = "INSERT INTO user_friends(user_friends.user_id, user_friends.friend_id)";
             $query .=" VALUES( :userID, :friendID)";
-        } else {
-            // TO DOFIFO
-        }
+            DB::insert($query, ['userID' => $userID, 'friendID'=>$friendID]);
 
-        $res = DB::insert($query, ['userID' => $userID, 'friendID'=>$friendID]);
-       
-        return $res;
+        } else {
+            
+            $removeQuery = "DELETE from user_friends";
+            $removeQuery .= " where id = (SELECT id from user_friends where user_id = :userID LIMIT 1)";
+            $removeFirstFriend = DB::delete($removeQuery, ['userID' => $userID]);
+           
+            if($removeFirstFriend){
+                $query = "INSERT INTO user_friends(user_friends.user_id, user_friends.friend_id)";
+                $query .=" VALUES( :userID, :friendID)";
+                DB::insert($query, ['userID' => $userID, 'friendID'=>$friendID]);
+            }
+            dd($removeFirstFriend);
+        }
+        
+        return response()->json('User added Successfully');
     }
 
     public static function getUserFriendsIds($userID)
@@ -47,10 +52,10 @@ class User extends Authenticatable implements JWTSubject
         $query = "SELECT u.id, u.name,";
         $query .= " EXISTS(SELECT *";
         $query .= " FROM user_friends";
-        $query .= " WHERE user_id = '$userId' AND friend_id = u.id) AS isFriend";
-        $query .= " FROM users u WHERE u.id != '$userId' ";
+        $query .= " WHERE user_id = :userId AND friend_id = u.id) AS isFriend";
+        $query .= " FROM users u WHERE u.id != :userId2 ";
 
-        $res = DB::select(DB::raw($query)); //, ['userId' => $userId]
+        $res = DB::select($query, ['userId' => $userId, 'userId2' => $userId]); //, ['userId' => $userId]
        
         return $res;
     }
@@ -86,7 +91,7 @@ class User extends Authenticatable implements JWTSubject
         $query .=" BETWEEN DATE_FORMAT(current_date, '%m-%d')";
         $query .=" AND DATE_FORMAT((DATE_ADD(current_date, INTERVAL 5 DAY)),'%m-%d'))";
         $query .=" AND users.id != :userId";
-        $query .=" GROUP BY users.id";
+        $query .=" GROUP BY hobbies.hobbie_name";
 
         $res = DB::select($query, ['userId' => $userId]);
        
