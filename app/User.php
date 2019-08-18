@@ -13,21 +13,18 @@ class User extends Authenticatable implements JWTSubject
 {
     public static function addFriend($userID, $friendID)
     {
-        
         $userFriendsIDs = self::getUserFriendsIds($userID);
         if (count($userFriendsIDs) < 5) {
             print_r(count($userFriendsIDs));
             $query = "INSERT INTO user_friends(user_friends.user_id, user_friends.friend_id)";
             $query .=" VALUES( :userID, :friendID)";
             DB::insert($query, ['userID' => $userID, 'friendID'=>$friendID]);
-
         } else {
-            
             $removeQuery = "DELETE from user_friends";
             $removeQuery .= " where id = (SELECT id from user_friends where user_id = :userID LIMIT 1)";
             $removeFirstFriend = DB::delete($removeQuery, ['userID' => $userID]);
            
-            if($removeFirstFriend){
+            if ($removeFirstFriend) {
                 $query = "INSERT INTO user_friends(user_friends.user_id, user_friends.friend_id)";
                 $query .=" VALUES( :userID, :friendID)";
                 DB::insert($query, ['userID' => $userID, 'friendID'=>$friendID]);
@@ -72,28 +69,24 @@ class User extends Authenticatable implements JWTSubject
        
         return $res;
     }
-    public static function getPotentialFriends($userId)
+    public static function getPotentialFriends($userID)
     {
-        $query = "SELECT users.id,users.name, users.user_birthday,hobbies.hobbie_name";
-        $query .=" FROM `users`";
-        $query .=" INNER JOIN user_hobbies on user_hobbies.user_id = users.id";
-        $query .=" INNER JOIN hobbies ON hobbies.id = user_hobbies.hobby_id";
-        $query .=" INNER JOIN (";
-        $query .="SELECT hobby_id";
-        $query .=" FROM user_hobbies";
-        $query .=" GROUP BY hobby_id";
-        $query .=" HAVING COUNT(*) > 1";
-        $query .=") AS multiple ON multiple.hobby_id = user_hobbies.hobby_id";
-        $query .=" WHERE (DATE_FORMAT(user_birthday, '%m-%d')";
-        $query .=" BETWEEN DATE_FORMAT((DATE_SUB(current_date, INTERVAL 5 DAY)),'%m-%d')";
-        $query .=" AND DATE_FORMAT(NOW(), '%m-%d'))";
-        $query .=" OR (DATE_FORMAT(user_birthday, '%m-%d')";
-        $query .=" BETWEEN DATE_FORMAT(current_date, '%m-%d')";
-        $query .=" AND DATE_FORMAT((DATE_ADD(current_date, INTERVAL 5 DAY)),'%m-%d'))";
-        $query .=" AND users.id != :userId";
-        $query .=" GROUP BY hobbies.hobbie_name";
+        $query = "SELECT users.id ,users.name, users.user_birthday,hobbies.hobbie_name";
+        $query .= " FROM users";
+        $query .= " INNER JOIN user_hobbies on user_hobbies.user_id = users.id";
+        $query .= " INNER JOIN hobbies ON hobbies.id = user_hobbies.hobby_id";
+        $query .= " INNER JOIN (SELECT hobby_id FROM user_hobbies)";
+        $query .= " AS multiple ON multiple.hobby_id = user_hobbies.hobby_id";
+        $query .= " WHERE ((DATE_FORMAT(user_birthday, '%m-%d')";
+        $query .= " BETWEEN DATE_FORMAT((DATE_SUB(current_date, INTERVAL 5 DAY)),'%m-%d')";
+        $query .= " AND DATE_FORMAT(NOW(), '%m-%d'))";
+        $query .= " OR (DATE_FORMAT(user_birthday, '%m-%d')";
+        $query .= " BETWEEN DATE_FORMAT(current_date, '%m-%d')";
+        $query .= " AND DATE_FORMAT((DATE_ADD(current_date, INTERVAL 5 DAY)),'%m-%d')))";
+        $query .= " AND users.id !=:userID";
+        $query .= " GROUP BY users.name";
 
-        $res = DB::select($query, ['userId' => $userId]);
+        $res = DB::select($query, ['userID' => $userID]);
        
         return $res;
     }
@@ -133,7 +126,6 @@ class User extends Authenticatable implements JWTSubject
 
     public static function getLoggedUserData($userId)
     {
-       
         $loggedUserData = DB::select('select id,name,related_friends from users where id = :loggedUserId', ['loggedUserId' => $userId]);
         
         return $loggedUserData;

@@ -7,9 +7,9 @@ class SiteMembersList extends React.Component {
     // console.log(site_memebers)
     const listmembers = site_memebers.map((item, index) => (
       <li className="d-flex justify-content-between list-group-item" key={item.id}>
-        <span>{item.name} | {item.id}</span>
+        <span >{item.name}</span>
         <span >{item.isFriend == 1 ?
-          <i className="fa fa-users"></i> : <button value={item.id} onClick={() => this.props.onAddFriend(item.id)}
+          <i className="fa fa-users" title="You are Friends"></i> : <button value={item.id} onClick={() => this.props.onAddFriend(item.id)}
             className="btn btn-primary btn-xs" title="Add New Friend">+Add</button>}
         </span>
       </li>

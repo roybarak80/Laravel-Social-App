@@ -84307,8 +84307,9 @@ function (_React$Component) {
         return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("li", {
           className: "d-flex justify-content-between list-group-item",
           key: item.id
-        }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", null, item.name, " | ", item.id), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", null, item.isFriend == 1 ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", {
-          className: "fa fa-users"
+        }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", null, item.name), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", null, item.isFriend == 1 ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", {
+          className: "fa fa-users",
+          title: "You are Friends"
         }) : react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
           value: item.id,
           onClick: function onClick() {
